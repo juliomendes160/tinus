@@ -15,8 +15,8 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
-# [webview_flutter](https://pub.dev/packages/webview_flutter)
-
 ```bash
-flutter pub add webview_flutter
+flutter pub add webview_flutter # https://pub.dev/packages/webview_flutter
+flutter pub add permission_handler # https://pub.dev/packages/permission_handler
+flutter pub add rflutter_alert # https://pub.dev/packages/rflutter_alert
 ```

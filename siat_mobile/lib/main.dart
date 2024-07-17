@@ -1,5 +1,7 @@
 
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 void main() {
@@ -146,4 +148,24 @@ WebViewController webViewController(BuildContext context) {
   controller.setJavaScriptMode(JavaScriptMode.unrestricted);
   controller.loadRequest(Uri.parse("https://www2.tinus.com.br/csp/TESTECAM/portal/mobile.csp?515vPvr3259WZVxt29581YmXu4618Hb=CWES11JoC574Mej31113SqkVI187raELC6277u4757601Ztti780"));
   return controller;
+}
+
+Future<void> permission(BuildContext context, String title, String desc) async {
+  await Alert(
+    context: context,
+    title: title,
+    desc: desc,
+    buttons: [
+      DialogButton(
+        color: Colors.blue,
+        onPressed: () async {
+          await openAppSettings();
+          if(context.mounted){
+            Navigator.pop(context);
+          }
+        },
+        child: const Text("Configurações", style: TextStyle(color: Colors.white, fontSize: 20),),
+      ),
+    ],
+  ).show();
 }
