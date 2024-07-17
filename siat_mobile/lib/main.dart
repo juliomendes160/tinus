@@ -1,10 +1,16 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await FlutterDownloader.initialize();
+
   runApp(const MyApp());
 }
 
@@ -168,4 +174,34 @@ Future<void> permission(BuildContext context, String title, String desc) async {
       ),
     ],
   ).show();
+}
+
+Future<void> download(BuildContext context, NavigationRequest request) async {
+  var status = await Permission.notification.status;
+
+  if (!status.isGranted) {
+    status = await Permission.notification.request();
+
+    if (!status.isGranted) {
+      if (context.mounted) {
+        await permission(
+          context,
+          "Permissão de Notificação",
+          "Para executar downloads"
+        );
+        status = await Permission.notification.request();
+      }
+    }
+  }
+
+  if (status.isGranted) {
+    final directory = await getExternalStorageDirectory();
+    final savedDir = directory?.path ?? '';
+
+    await FlutterDownloader.enqueue(
+      url: request.url,
+      savedDir: savedDir,
+    );
+
+  }
 }

@@ -19,4 +19,6 @@ samples, guidance on mobile development, and a full API reference.
 flutter pub add webview_flutter # https://pub.dev/packages/webview_flutter
 flutter pub add permission_handler # https://pub.dev/packages/permission_handler
 flutter pub add rflutter_alert # https://pub.dev/packages/rflutter_alert
+flutter pub add path_provider # https://pub.dev/packages/path_provider
+flutter pub add flutter_downloader # https://pub.dev/packages/flutter_downloader
 ```
