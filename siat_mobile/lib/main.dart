@@ -12,8 +12,31 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+class Environment {
+  static late Map<String, dynamic> _current;
+
+  static Map<String, dynamic> get current => _current;
+
+  static Future<void> loadSettings() async {
+    _current = await _loadSettings();
+  }
+
+  static Future<Map<String, dynamic>> _loadSettings() async {
+    Map<String, dynamic> environment = {
+      'icon': '@mipmap/testecam',
+      'id': 'teste.cam.br.gov.camaragibe',
+      'label': 'Camaragibe',
+      'title': 'Camaragibe',
+      'uri': 'https://www2.tinus.com.br/csp/TESTECAM/portal/mobile.csp?515vPvr3259WZVxt29581YmXu4618Hb=CWES11JoC574Mej31113SqkVI187raELC6277u4757601Ztti780',
+    };
+    return environment;
+  }
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Environment.loadSettings();
 
   await FlutterDownloader.initialize();
 
@@ -27,7 +50,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Camaragibe',
+      title: Environment.current['title'],
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -47,7 +70,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Camaragibe'),
+      home: MyHomePage(title: Environment.current['title']),
     );
   }
 }
@@ -160,7 +183,7 @@ WebViewController webViewController(BuildContext context) {
   controller.setJavaScriptMode(JavaScriptMode.unrestricted);
   controller.setNavigationDelegate(NavigationDelegate(
     onNavigationRequest: (NavigationRequest request) async {
-       if (Uri.parse("https://www2.tinus.com.br/csp/TESTECAM/portal/mobile.csp?515vPvr3259WZVxt29581YmXu4618Hb=CWES11JoC574Mej31113SqkVI187raELC6277u4757601Ztti780").host != Uri.parse(request.url).host) {
+       if (Uri.parse(Environment.current['uri']).host != Uri.parse(request.url).host) {
           await openExternalURL(context, request);
           return NavigationDecision.prevent;
         }
@@ -177,7 +200,7 @@ WebViewController webViewController(BuildContext context) {
   controller.addJavaScriptChannel('Print', onMessageReceived: (onMessageReceived) async {
     await upload(context, controller);
   });
-  controller.loadRequest(Uri.parse("https://www2.tinus.com.br/csp/TESTECAM/portal/mobile.csp?515vPvr3259WZVxt29581YmXu4618Hb=CWES11JoC574Mej31113SqkVI187raELC6277u4757601Ztti780"));
+  controller.loadRequest(Uri.parse(Environment.current['uri']));
   return controller;
 }
 
