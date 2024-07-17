@@ -1,5 +1,10 @@
 
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -160,7 +165,13 @@ WebViewController webViewController(BuildContext context) {
       }
       return NavigationDecision.navigate;
     },
+    onPageFinished: (String url) async {
+      await inputFile(context,  controller);
+    },
   ));
+  controller.addJavaScriptChannel('Print', onMessageReceived: (onMessageReceived) async {
+    await upload(context, controller);
+  });
   controller.loadRequest(Uri.parse("{{URI}}"));
   return controller;
 }
@@ -212,5 +223,79 @@ Future<void> download(BuildContext context, NavigationRequest request) async {
       savedDir: savedDir,
     );
 
+  }
+}
+
+Future<void> inputFile(BuildContext context, WebViewController controller) async {
+  controller.runJavaScript('''
+    window[0].frameElement.onload = function () {
+      if (window[0].document.getElementById('FileStream')){
+        window[0].document.getElementById('FileStream').onclick = function() {
+          try { Print.postMessage(''); } catch (error) { }
+        }
+      }
+      
+      if (window[0].document.getElementById('upload')) {
+        window[0].document.getElementById('upload').onload = function () {
+          if (window[0][0].document.getElementById('FileStream')) {
+            window[0][0].document.getElementById('FileStream').onclick = function() {
+              try { Print.postMessage(''); } catch (error) { }
+            }
+          }
+        }
+      }
+    }
+  ''');
+}
+
+Future<void> upload(BuildContext context, WebViewController controller) async {
+
+  var status = await Permission.manageExternalStorage.status;
+
+  if (!status.isGranted) {
+    status = await Permission.manageExternalStorage.request();
+
+    if (!status.isGranted) {
+      if (context.mounted){
+        await permission(
+          context,
+          "Permissão de Armazenamento",
+          "Para executar uploads"
+        );
+        status = await Permission.manageExternalStorage.request();
+      }
+    }
+  }
+
+  if (status.isGranted) {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.any);
+
+    if (result != null) {
+
+      PlatformFile data = result.files.single;
+
+      File file = File(data.path!);
+      
+      Uint8List bytes = await file.readAsBytes();
+
+      String content =  base64.encode(bytes);
+
+      controller.runJavaScript('''
+        var fileInput = window[0].document.getElementById('FileStream') || window[0][0].document.getElementById('FileStream');
+        if (fileInput) {
+          var base64Data = '$content';
+          var byteCharacters = atob(base64Data); // Decodifica Base64 para uma string de bytes
+          var byteNumbers = new Array(byteCharacters.length);
+          for (var i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+          var byteArray = new Uint8Array(byteNumbers);
+          var file = new File([byteArray], '${data.name}');
+          var dataTransfer = new DataTransfer();
+          dataTransfer.items.add(file);
+          fileInput.files = dataTransfer.files;
+        }
+      ''');
+    }
   }
 }
