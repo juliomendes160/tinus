@@ -15,7 +15,23 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
+# Criar APP
+
+```objectscript
+
+// Logo do APP rotina - CSPWEBMOBILE
+
+;CSPWEBMOBILE: Este código requer a criação das pastas e o armazenamento das imagens no TS correspondentes.
+
+BODY
+	DO PATH^EMIPDF
+	S LOGOTOPO="",WLOGO=WDIRIMG_"imagens/AppMobile/app_logo_pref.png" IF ##class(%Library.File).Exists(PATH_WLOGO) S LOGOTOPO=WLOGO
+	S LOGOAPP="",WLOGO=WDIRIMG_"imagens/AppMobile/app_logo_inicio.png" IF ##class(%Library.File).Exists(PATH_WLOGO) S LOGOAPP=WLOGO
+	;
+```
+
 # Packages
+
 ```bash
 flutter pub add webview_flutter # https://pub.dev/packages/webview_flutter
 flutter pub add permission_handler # https://pub.dev/packages/permission_handler
