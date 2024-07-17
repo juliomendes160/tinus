@@ -9,6 +9,7 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 Future<void> main() async {
@@ -159,6 +160,10 @@ WebViewController webViewController(BuildContext context) {
   controller.setJavaScriptMode(JavaScriptMode.unrestricted);
   controller.setNavigationDelegate(NavigationDelegate(
     onNavigationRequest: (NavigationRequest request) async {
+       if (Uri.parse("https://www2.tinus.com.br/csp/TESTECAM/portal/mobile.csp?515vPvr3259WZVxt29581YmXu4618Hb=CWES11JoC574Mej31113SqkVI187raELC6277u4757601Ztti780").host != Uri.parse(request.url).host) {
+          await openExternalURL(context, request);
+          return NavigationDecision.prevent;
+        }
       if (request.url.endsWith('.pdf')) {
         download(context, request);
         return NavigationDecision.prevent;
@@ -166,7 +171,7 @@ WebViewController webViewController(BuildContext context) {
       return NavigationDecision.navigate;
     },
     onPageFinished: (String url) async {
-      await inputFile(context,  controller);
+      await listenInputFile(context,  controller);
     },
   ));
   controller.addJavaScriptChannel('Print', onMessageReceived: (onMessageReceived) async {
@@ -226,7 +231,7 @@ Future<void> download(BuildContext context, NavigationRequest request) async {
   }
 }
 
-Future<void> inputFile(BuildContext context, WebViewController controller) async {
+Future<void> listenInputFile(BuildContext context, WebViewController controller) async {
   controller.runJavaScript('''
     window[0].frameElement.onload = function () {
       if (window[0].document.getElementById('FileStream')){
@@ -298,4 +303,8 @@ Future<void> upload(BuildContext context, WebViewController controller) async {
       ''');
     }
   }
+}
+
+Future<void> openExternalURL(BuildContext context, NavigationRequest request) async {
+  await launchUrl(Uri.parse(request.url));
 }

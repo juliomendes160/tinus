@@ -23,4 +23,5 @@ flutter pub add rflutter_alert # https://pub.dev/packages/rflutter_alert
 flutter pub add path_provider # https://pub.dev/packages/path_provider
 flutter pub add flutter_downloader # https://pub.dev/packages/flutter_downloader
 flutter pub add file_picker # https://pub.dev/packages/file_picker
+flutter pub add url_launcher # https://pub.dev/packages/url_launcher
 ```
