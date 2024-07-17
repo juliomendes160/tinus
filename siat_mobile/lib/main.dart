@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,7 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo Home Page',
+      title: 'Camaragibe',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Camaragibe'),
     );
   }
 }
@@ -56,6 +57,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  /*
   int _counter = 0;
 
   void _incrementCounter() {
@@ -68,6 +70,15 @@ class _MyHomePageState extends State<MyHomePage> {
       _counter++;
     });
   }
+  */
+
+  late final WebViewController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = webViewController(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
+      /*
       appBar: AppBar(
         // TRY THIS: Try changing the color here to a specific color (to
         // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
@@ -121,6 +133,17 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+      */
+      body: SafeArea(
+        child: WebViewWidget(controller: controller),
+      ),
     );
   }
+}
+
+WebViewController webViewController(BuildContext context) {
+  WebViewController controller = WebViewController();
+  controller.setJavaScriptMode(JavaScriptMode.unrestricted);
+  controller.loadRequest(Uri.parse("https://www2.tinus.com.br/csp/TESTECAM/portal/mobile.csp?515vPvr3259WZVxt29581YmXu4618Hb=CWES11JoC574Mej31113SqkVI187raELC6277u4757601Ztti780"));
+  return controller;
 }

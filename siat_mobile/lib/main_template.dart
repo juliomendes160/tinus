@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 void main() {
   runApp(const MyApp());
@@ -56,6 +57,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  /*
   int _counter = 0;
 
   void _incrementCounter() {
@@ -68,6 +70,15 @@ class _MyHomePageState extends State<MyHomePage> {
       _counter++;
     });
   }
+  */
+
+  late final WebViewController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = webViewController(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
+      /*
       appBar: AppBar(
         // TRY THIS: Try changing the color here to a specific color (to
         // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
@@ -121,6 +133,17 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+      */
+      body: SafeArea(
+        child: WebViewWidget(controller: controller),
+      ),
     );
   }
+}
+
+WebViewController webViewController(BuildContext context) {
+  WebViewController controller = WebViewController();
+  controller.setJavaScriptMode(JavaScriptMode.unrestricted);
+  controller.loadRequest(Uri.parse("{{URI}}"));
+  return controller;
 }
