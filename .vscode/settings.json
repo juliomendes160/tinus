@@ -6,6 +6,9 @@
             "args": [
                 "--rcfile", "${workspaceFolder}\\.bash\\.bash_profile",
             ],
+            "env": {
+                "WORKSPACE":"${workspaceFolder}\\.bash\\.bashrc"
+            }
         }
     },
 }

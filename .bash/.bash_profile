@@ -6,4 +6,4 @@ PATH=$PATH:$(cygpath -u "C:\Users\julio\AppData\Local\Pub\Cache\bin")
 PATH=$PATH:$(cygpath -u "C:\Users\julio\AppData\Roaming\nvm")
 PATH=$PATH:$(cygpath -u "C:\Users\julio\AppData\Roaming\npm")
 PATH=$PATH:$(cygpath -u "C:\Users\julio\flutter\bin")
-source .bash/.bashrc
+source $(cygpath -u "$WORKSPACE")
