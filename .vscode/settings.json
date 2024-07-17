@@ -3,7 +3,7 @@
     "terminal.integrated.profiles.windows": {
         "Git Bash": {
             "source": "Git Bash",
-            "args": ["--rcfile", "${workspaceFolder}\\.bash\\.bash_profile"],
+            "args": ["--rcfile", "${workspaceFolder}/.bash/.bash_profile"],
         }
-    }
+    },
 }
