@@ -1,6 +1,21 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
 
-void main() {
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await FlutterDownloader.initialize();
+
   runApp(const MyApp());
 }
 
@@ -55,6 +70,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  /*
   int _counter = 0;
 
   void _incrementCounter() {
@@ -67,6 +83,162 @@ class _MyHomePageState extends State<MyHomePage> {
       _counter++;
     });
   }
+  */
+  
+  late final WebViewController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = webViewController();
+  }
+
+  WebViewController webViewController() {
+    WebViewController controller = WebViewController();
+    controller.setJavaScriptMode(JavaScriptMode.unrestricted);
+    controller.setNavigationDelegate(NavigationDelegate(
+      onNavigationRequest: (NavigationRequest request) async {
+        if (Uri.parse("{{URI}}").host != Uri.parse(request.url).host) {
+          await openExternalURL(request);
+          return NavigationDecision.prevent;
+        }
+        if (request.url.endsWith('.pdf')) {
+          await download(request);
+          return NavigationDecision.prevent;
+        }
+        return NavigationDecision.navigate;
+      },
+      onPageFinished: (String url) async {
+        await listenInputFile();
+      },
+    ));
+    controller.addJavaScriptChannel('Print', onMessageReceived: (onMessageReceived) async {
+      await upload();
+    });
+    controller.loadRequest(Uri.parse("{{URI}}"));
+    return controller;
+  }
+
+  Future<void> permission(String title, String desc) async {
+    await Alert(
+        context: context,
+        title: title,
+        desc: desc,
+        buttons: [
+        DialogButton(
+            color: Colors.blue,
+            onPressed: () async {
+            await openAppSettings(); 
+            if(mounted){
+              Navigator.pop(context);
+            }
+            },
+            child: const Text("Configurações", style: TextStyle(color: Colors.white, fontSize: 20)),
+        ),
+        ],
+    ).show();
+  }
+
+  Future<void> download(NavigationRequest request) async {
+    var status = await Permission.notification.status;
+
+    if (!status.isGranted) {
+      status = await Permission.notification.request();
+
+      if (!status.isGranted) {
+        await permission(
+          "Permissão de Notificação",
+          "Para executar downloads"
+        );
+        status = await Permission.notification.request();
+      }
+    }
+
+    if (status.isGranted) {
+      final directory = await getExternalStorageDirectory();
+      final savedDir = directory?.path ?? '';
+
+      await FlutterDownloader.enqueue(
+        url: request.url,
+        savedDir: savedDir,
+      );
+    }
+  }
+
+  Future<void> listenInputFile() async {
+    controller.runJavaScript('''
+      window[0].frameElement.onload = function () {
+        if (window[0].document.getElementById('FileStream')){
+          window[0].document.getElementById('FileStream').onclick = function() {
+            try { Print.postMessage(''); } catch (error) { }
+          }
+        }
+        
+        if (window[0].document.getElementById('upload')) {
+          window[0].document.getElementById('upload').onload = function () {
+            if (window[0][0].document.getElementById('FileStream')) {
+              window[0][0].document.getElementById('FileStream').onclick = function() {
+                try { Print.postMessage(''); } catch (error) { }
+              }
+            }
+          }
+        }
+      }
+    ''');
+  }
+
+  Future<void> upload() async {
+
+    var status = await Permission.manageExternalStorage.status;
+
+    if (!status.isGranted) {
+      status = await Permission.manageExternalStorage.request();
+
+      if (!status.isGranted) {
+        await permission(
+          "Permissão de Armazenamento",
+          "Para executar uploads"
+        );
+        status = await Permission.manageExternalStorage.request();
+      }
+    }
+
+    if (status.isGranted) {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.any);
+
+      if (result != null) {
+
+        PlatformFile data = result.files.single;
+
+        File file = File(data.path!);
+        
+        Uint8List bytes = await file.readAsBytes();
+
+        String content =  base64.encode(bytes);
+
+        controller.runJavaScript('''
+          var fileInput = window[0].document.getElementById('FileStream') || window[0][0].document.getElementById('FileStream');
+          if (fileInput) {
+            var base64Data = '$content';
+            var byteCharacters = atob(base64Data); // Decodifica Base64 para uma string de bytes
+            var byteNumbers = new Array(byteCharacters.length);
+            for (var i = 0; i < byteCharacters.length; i++) {
+              byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            var byteArray = new Uint8Array(byteNumbers);
+            var file = new File([byteArray], '${data.name}');
+            var dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fileInput.files = dataTransfer.files;
+          }
+        ''');
+      }
+    }
+  }
+
+  Future<void> openExternalURL(NavigationRequest request) async {
+    await launchUrl(Uri.parse(request.url));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +249,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
+      /*
       appBar: AppBar(
         // TRY THIS: Try changing the color here to a specific color (to
         // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
@@ -120,6 +293,10 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+      */
+      body: SafeArea(
+        child: WebViewWidget(controller: controller),
+      ),
     );
   }
 }
