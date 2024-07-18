@@ -24,11 +24,11 @@ class Environment {
     
     if (defaultTargetPlatform == TargetPlatform.android) {
       environment = {
-        'icon': '@mipmap/ic_launcher',
-        'id': 'com.example.siat_mobile',
-        'label': 'siat_mobile',
-        'title': 'Flutter Demo Home Page',
-        'uri': '',
+        'icon': '{{ICON}}',
+        'id': '{{ID}}',
+        'label': '{{LABEL}}',
+        'title': '{{TITLE}}',
+        'uri': '{{URI}}',
       };
     }
     
