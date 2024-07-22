@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -23,6 +24,8 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  await FirebaseMessaging.instance.setAutoInitEnabled(true);
 
   runApp(const MyApp());
 }
@@ -47,9 +50,12 @@ class Environment {
         'label': 'Teste Camaragibe Conectado',
         'title': 'Camaragibe',
         'uri': 'https://www2.tinus.com.br/csp/TESTECAM/portal/mobile.csp?515vPvr3259WZVxt29581YmXu4618Hb=CWES11JoC574Mej31113SqkVI187raELC6277u4757601Ztti780',
+        'version': '1.0',
       };
     }
     
+    environment['android'] = await FirebaseMessaging.instance.getToken();
+    environment['ios'] = await FirebaseMessaging.instance.getAPNSToken();
     return environment;
   }
 }
@@ -121,7 +127,8 @@ WebViewController webViewController(BuildContext context) {
   controller.addJavaScriptChannel('Print', onMessageReceived: (onMessageReceived) async {
     await upload(context, controller);
   });
-  controller.loadRequest(Uri.parse(Environment.current['uri']));
+  // controller.loadRequest(Uri.parse(Environment.current['uri']));
+  controller.loadRequest(Uri.parse("${Environment.current['uri']}&WANDROID=${Environment.current['android']}&WIOS=${Environment.current['ios']}"));
   return controller;
 }
 
