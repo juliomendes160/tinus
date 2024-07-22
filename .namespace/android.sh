@@ -2,6 +2,6 @@ declare -A ANDROID=(
     [ICON]="@mipmap/ic_launcher"
     [ID]="com.example.siat_mobile"
     [LABEL]="siat_mobile"
-    [TITLE]="Flutter Demo Home Page"
+    [TITLE]="Flutter"
     [URI]=""
 )
