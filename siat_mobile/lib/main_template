@@ -36,12 +36,12 @@ class Environment {
     
     if (defaultTargetPlatform == TargetPlatform.android) {
       environment = {
-        'icon': '@mipmap/testecam',
-        'id': 'teste.br.gov.camaragibe',
-        'label': 'Teste Camaragibe Conectado',
-        'title': 'Camaragibe',
-        'uri': 'https://www2.tinus.com.br/csp/TESTECAM/portal/mobile.csp?515vPvr3259WZVxt29581YmXu4618Hb=CWES11JoC574Mej31113SqkVI187raELC6277u4757601Ztti780',
-        'version': '1.0',
+        'icon': '{{ICON}}',
+        'id': '{{ID}}',
+        'label': '{{LABEL}}',
+        'title': '{{TITLE}}',
+        'uri': '{{URI}}',
+        'version': '{{VERSION}}',
       };
     }
     

@@ -24,7 +24,7 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace = "com.example.siat_mobile"
+    namespace = "{{ID}}"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
