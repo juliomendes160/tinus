@@ -48,6 +48,7 @@ flutter pub add flutter_downloader
 flutter pub add file_picker
 flutter pub add url_launcher
 flutter pub add firebase_core
+flutter pub add firebase_messaging
 ```
 
 # flutterfire
@@ -66,3 +67,5 @@ flutterfire configure --project=siat-mobile-5a9ee
 - [flutter_downloader](https://pub.dev/packages/flutter_downloader)
 - [file_picker](https://pub.dev/packages/file_picker)
 - [url_launcher](https://pub.dev/packages/url_launcher)
+- [firebase_core](https://pub.dev/packages/firebase_core)
+- [firebase_messaging](https://pub.dev/packages/firebase_messaging)
