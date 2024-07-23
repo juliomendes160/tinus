@@ -2,18 +2,49 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:siat_mobile/firebase_options.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+
+// @pragma('vm:entry-point')
+// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+//   // If you're going to use other Firebase services in the background, such as Firestore,
+//   // make sure you call `initializeApp` before using other Firebase services.
+//   // await Firebase.initializeApp();
+
+//   print("Handling a background message: ${message.messageId}");
+// }
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  requestNotificationPemission();
+
+  await FirebaseMessaging.instance.setAutoInitEnabled(true);
+  
+  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  
+  // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  //   print('Got a message whilst in the foreground!');
+  //   print('Message data: ${message.data}');
+
+  //   if (message.notification != null) {
+  //     print('Message also contained a notification: ${message.notification}');
+  //   }
+  // });
+  
   await Environment.loadSettings();
 
   await FlutterDownloader.initialize();
@@ -44,6 +75,9 @@ class Environment {
         'version': '1.0',
       };
     }
+    
+    environment['android'] = await FirebaseMessaging.instance.getToken();
+    environment['ios'] = await FirebaseMessaging.instance.getAPNSToken();
     
     return environment;
   }
@@ -246,4 +280,20 @@ Future<void> upload(BuildContext context, WebViewController controller) async {
 
 Future<void> openExternalURL(BuildContext context, NavigationRequest request) async {
   await launchUrl(Uri.parse(request.url));
+}
+
+Future<void> requestNotificationPemission() async {
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+  NotificationSettings settings = await messaging.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
+
+  // print('User granted permission: ${settings.authorizationStatus}');
 }

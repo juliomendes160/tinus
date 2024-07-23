@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "503951408699",
+    "project_id": "siat-mobile-fb7a1",
+    "storage_bucket": "siat-mobile-fb7a1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:503951408699:android:366584a90ef4323abe661e",
+        "android_client_info": {
+          "package_name": "teste.br.gov.camaragibe"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAP2mRejHr5bnlk1OrOOc262WGdiAfSE9k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:503951408699:android:c4b5e42fdd9eb05ebe661e",
+        "android_client_info": {
+          "package_name": "teste.br.gov.igarassu"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAP2mRejHr5bnlk1OrOOc262WGdiAfSE9k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

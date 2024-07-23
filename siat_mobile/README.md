@@ -1,43 +1,65 @@
 # Criar App
 
-**Criar Global**
+## Criar Global
 
-    Criar global no namespace correspodente.
+```
+Criar global no namespace correspodente.
 
-    ^SIDVPM("IGA","APP") = "FISCO FÁCIL IGARASSU#https://play.google.com/store/apps/details?id=br.gov.igarassu##"
+^SIDVPM("IGA","APP") = "FISCO FÁCIL IGARASSU#https://play.google.com/store/apps/details?id=br.gov.igarassu##"
 
-    Piece 1 - Título da logo quando não houver imagem 
-    Piece 2 - Link do app na play store
+Piece 2 - Link do app na play store
 
-**Gerar Imagens**
-    
-    Site para gerar imagens do aplicativo.
-    
-    https://www.appicon.co/
+Piece 1 - Título da logo quando não houver imagem
+```
 
-**Adicionar Imagens**
+## Gerar Imagens
 
-    Adicione as imagens dentro do projeto nas pastas correspondentes.
+``` 
+Link para gerar imagens do aplicativo: https://www.appicon.co/ 
+```
 
-    siat_mobile\android\app\src\main\res\mipmap-*
+## Adicionar Imagens
 
-    Adicionar imagens na pasta correspondente no TS.
+```
+Adicione as imagens dentro do projeto nas pastas correspondentes.
 
-    C:\InterSystems\teste\CSP\testeiga\portal\imagens\AppMobile\app_logo_pref.png
-    C:\InterSystems\teste\CSP\testeiga\portal\imagens\AppMobile\app_logo_inicio.png
+siat_mobile\android\app\src\main\res\mipmap-*
 
-**CSPWEBMOBILE**
+Adicionar imagens na pasta correspondente no TS.
 
-    Rotina responsável pela logo do app.
+C:\InterSystems\teste\CSP\testeiga\portal\imagens\AppMobile\app_logo_pref.png
+
+C:\InterSystems\teste\CSP\testeiga\portal\imagens\AppMobile\app_logo_inicio.png
+```
+
+
+## CSPWEBMOBILE
+
+```
+Rotina responsável pela logo do app.
+```
 
 ```objectscript
 BODY
     DO PATH^EMIPDF
     S LOGOTOPO="",WLOGO=WDIRIMG_"imagens/AppMobile/app_logo_pref.png" IF ##class(%Library.File).Exists(PATH_WLOGO) S LOGOTOPO=WLOGO
     S LOGOAPP="",WLOGO=WDIRIMG_"imagens/AppMobile/app_logo_inicio.png" IF ##class(%Library.File).Exists(PATH_WLOGO) S LOGOAPP=WLOGO
- ```
+```
 
-# flutter
+## Firebase
+
+```
+Comandos para configurar o projeto. Adicione o nome do pacote desejado quando solicitado.
+```
+
+```bash
+firebase login
+flutterfire configure --project=siat-mobile-5a9ee
+```
+
+# Flutter
+
+> Terminal
 
 ```bash
 flutter pub add webview_flutter 
@@ -47,17 +69,11 @@ flutter pub add path_provider
 flutter pub add flutter_downloader 
 flutter pub add file_picker
 flutter pub add url_launcher
-flutter pub add firebase_messaging
 flutter pub add firebase_core
+flutter pub add firebase_messaging
 ```
 
-# flutterfire
-
-```bash
-flutterfire configure --project=siat-mobile-5a9ee
-```
-
-# Documentation
+> Documentation
 
 - [flutter](https://docs.flutter.dev)
 - [webview_flutter](https://pub.dev/packages/webview_flutter)
@@ -67,4 +83,18 @@ flutterfire configure --project=siat-mobile-5a9ee
 - [flutter_downloader](https://pub.dev/packages/flutter_downloader)
 - [file_picker](https://pub.dev/packages/file_picker)
 - [url_launcher](https://pub.dev/packages/url_launcher)
+- [firebase_core](https://pub.dev/packages/firebase_core)
 - [firebase_messaging](https://pub.dev/packages/firebase_messaging)
+
+# Firebase
+
+> Terminal
+
+```bash
+firebase login
+flutterfire configure --project=siat-mobile-fb7a1
+```
+
+> Documentation
+
+- [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging/flutter/client?authuser=0&hl=pt)
