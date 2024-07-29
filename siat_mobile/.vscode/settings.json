@@ -1,0 +1,10 @@
+{
+    "dart.flutterSdkPath": "C:\\Users\\julio\\dev\\flutter\\3.22.2",
+    "terminal.integrated.defaultProfile.windows": "Git Bash",
+    "terminal.integrated.profiles.windows": {
+        "Git Bash": {
+            "source": "Git Bash",
+            "args": ["--rcfile", "${workspaceFolder}/.bash/.bash_profile"],
+        }
+    }
+}
